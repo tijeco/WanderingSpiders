@@ -3,7 +3,7 @@ package spider
 import (
 	"fmt"
 	"math/rand"
-	"sync"
+	"strconv"
 	"time"
 )
 
@@ -12,31 +12,42 @@ type Spider struct {
 	Cals float64
 }
 
+func AddToMap(key string, val Spider, c chan map[string]Spider) {
+	mappy := make(map[string]Spider)
+	mappy[key] = val
+	c <- mappy
+}
+
 var spiderMassMin = 222.4
 var spiderMassMax = 267.4
+var calPerDayMin = 0.0112
+var calPerDayMax = 0.1706
+var spiderMass, spiderCals, num float64
+var spiderID string
+var currentSpider Spider
 
 func MakeSpiders(n int) {
-	var wg sync.WaitGroup // number of working goroutines
 
 	// var spiders [n]Spider
-	spiders := make([]Spider, n)
-	for spiderNum := range spiders {
-		wg.Add(n)
-		rand.Seed(time.Now().UnixNano())
-		num := rand.Float64()
-		// num := 0.4771663944913364
-		r := spiderMassMin + num*(spiderMassMax-spiderMassMin)
-		fmt.Println(r, num)
-		go func(spiderNum int) {
-			defer wg.Done()
+	spiders := make([]map[string]Spider, n)
+	c := make(chan map[string]Spider)
 
-			spiders[spiderNum].Mass = r //+ float64(spiderNum)
-		}(spiderNum)
+	go func() {
+		for spiderNum := 0; spiderNum < n; spiderNum++ {
+			rand.Seed(time.Now().UnixNano())
+			num = rand.Float64()
+			spiderMass = spiderMassMin + num*(spiderMassMax-spiderMassMin)
+			spiderCals = calPerDayMin + num*(calPerDayMax-calPerDayMin)
+			spiderID = "spider_" + strconv.Itoa(n)
+			currentSpider = Spider{Mass: spiderMass, Cals: spiderCals}
+			AddToMap(spiderID, currentSpider, c)
+		}
+		close(c)
 
+	}()
+	for ret := range c {
+		spiders = append(spiders, ret)
 	}
-	// spider1.Mass = 10.1
-	// spider1.Cals = 10.2
 	fmt.Println(spiders)
-	// return spiders
 
 }
