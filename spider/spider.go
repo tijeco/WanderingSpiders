@@ -39,6 +39,7 @@ func MakeSpiders(n int) {
 			spiderMass = spiderMassMin + num*(spiderMassMax-spiderMassMin)
 			spiderCals = calPerDayMin + num*(calPerDayMax-calPerDayMin)
 			spiderID = "spider_" + strconv.Itoa(n)
+			fmt.Println(spiderID)
 			currentSpider = Spider{Mass: spiderMass, Cals: spiderCals}
 			AddToMap(spiderID, currentSpider, c)
 		}
