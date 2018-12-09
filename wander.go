@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	a := spider.MakeSpiders(5000000, 20)
+	a := spider.MakeSpiders(5000000, 200)
 	_ = a
 }
