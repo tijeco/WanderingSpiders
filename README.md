@@ -88,7 +88,9 @@ Continue for 1000 generations/years.
 ## prediction
 
 ld50 will still bottom out, but perhaps more stochastically than trial1
-perhaps it is necessary to have average cricket mass grow over time too, though maybe just fine to expand cricket max to be 400 mg or something like that
+perhaps it is necessary to have average cricket mass grow over time too, though maybe just fine to expand cricket max to be 400 mg or something like that, that way they have access to large crickets at all time, but can only subdue them if they are large/ have potent enough venom.
+
+
 
 #setup for trial3
 
