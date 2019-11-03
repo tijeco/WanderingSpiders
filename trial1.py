@@ -33,12 +33,12 @@ ld50_low = 0.01
 ld50_high = 0.025 #avg =.0175
 
 spider_cluster = {"spiders": [sp.spider(1,ld50_low,ld50_high) for i in range(100)]}
-
+# print_year1 = True
 def annualFeeding(spiderCluster,inCricket,year):
     final_spiders = {"year":[],"mass":[],"id":[],"ld50":[],"spiders":[],"cricket":[]}
     for t in range(52): # consider making into annualFeeding(spider_clster,cricket) function
         current_time = "t_"+str(t)
-        for spider in spiderCluster:
+        for spider in spiderCluster: # NOTE: this should be able to be paralelized somehow
             feed_probability = cr.calc_toxicity(spider.toxins,inCricket.mass) # guaranteed cricket encounter every week
             if t == 0:
                 if spider.id == 0:
@@ -71,14 +71,16 @@ def annualFeeding(spiderCluster,inCricket,year):
                     final_spiders["id"].append(spider.id)
                     final_spiders["ld50"].append(spider.toxins["component_0"]["ld50"])
                     final_spiders["cricket"].append((cricket.mass,feed_probability))
+            # if print_year1:
+                # print(t,spider.id,spider.mass,spider.toxins["component_0"]["ld50"],feed_probability)
     annual_dataframe = pd.DataFrame.from_dict(final_spiders)
     annual_dataframe["reproduce"] = annual_dataframe["mass"].rank(pct = True).apply(prob_to_bool)
     return annual_dataframe
 year1 = annualFeeding(spider_cluster["spiders"],cricket,0)
-
+# print_year1 = False
 # print("start HERE")
-df_list = []
-for year in range(50):
+df_list = [year1]
+for year in range(1000):
 
     # print("year",year)
     offspring = []
@@ -93,5 +95,5 @@ for year in range(50):
     current_year = annualFeeding(offspring,cricket,year)
 
     df_list.append(current_year)
-out_df = pd.concat(df_list)
+out_df = pd.concat(df_list).drop(["spiders", "cricket"], axis=1)
 out_df.to_csv("trial1.csv")
